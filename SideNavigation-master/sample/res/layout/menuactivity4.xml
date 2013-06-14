@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/myRelateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+
+    <view android:layout_width="123dp"
+          android:layout_height="wrap_content"
+          class="com.actionbarsherlock.internal.widget.CapitalizingButton"
+          android:id="@+id/searchButton"
+          android:text="查询"
+          android:layout_toRightOf="@+id/progressBar" android:layout_below="@+id/editText"/>
+
+    <view class="com.actionbarsherlock.internal.widget.CapitalizingButton" android:layout_width="123dp"
+          android:layout_height="wrap_content" android:id="@+id/button2" android:text="图片选择"
+          android:layout_toLeftOf="@+id/progressBar" android:layout_alignTop="@+id/searchButton"/>
+    <TextView
+            android:layout_width="441dp"
+            android:layout_height="533dp"
+            android:id="@+id/textView"
+            android:background="@color/abs__background_holo_light"
+            android:layout_alignLeft="@+id/side_navigation_view" android:layout_alignParentTop="true"
+            android:layout_marginTop="158dp"/>
+    <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:background="@color/abs__background_holo_dark"
+            android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
+            android:layout_marginTop="200dp"/>
+    <EditText
+            android:layout_width="551dp"
+            android:layout_height="wrap_content"
+            android:text="请先选择图片，然后查询"
+            android:id="@+id/editText"
+            android:layout_alignTop="@+id/side_navigation_view" android:layout_alignLeft="@+id/side_navigation_view"
+            android:singleLine="true"/>
+    <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:id="@+id/imageView"
+            android:layout_alignParentLeft="true" android:layout_marginLeft="60dp"
+            android:layout_marginTop="120dp" android:background="@color/abs__bright_foreground_holo_dark"
+            android:src="@drawable/ic_android_logo"/>
+    <com.devspark.sidenavigation.SideNavigationView
+            android:id="@+id/side_navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"/>
+
+
+</RelativeLayout>

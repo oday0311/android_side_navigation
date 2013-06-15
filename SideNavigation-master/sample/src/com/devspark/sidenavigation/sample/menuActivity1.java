@@ -19,6 +19,7 @@ import com.devspark.sidenavigation.SideNavigationView;
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
+import com.theindex.CuzyAdSDK.CuzyAdSDK;
 import com.umeng.analytics.MobclickAgent;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,6 +32,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,6 +55,9 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
         super.onCreate(savedInstanceState);
 
+
+        CuzyAdSDK.getInstance().setContext(this);
+        CuzyAdSDK.getInstance().registerApp("200056","051a9e4652fc5b881dfc6ba74d3cd633");
 
 
         setContentView(R.layout.menuactivity1);
@@ -85,7 +90,9 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
             @Override
             public void onClick(View v) {
 
-                httpTest();
+                //  httpTest();
+                testCuzySDKfunction();
+
             }
         });
 
@@ -112,6 +119,16 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
         adView.loadAd(new AdRequest());
     }
 
+    public void testCuzySDKfunction()
+    {
+
+        //1.
+        CuzyAdSDK.getInstance().fetchItems("","茶叶",0);
+        //2. CuzyAdSDK.getInstance().fetchItems("6","",0);
+        //3. rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
+        //Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+        //
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getSupportMenuInflater().inflate(R.menu.main_menu, menu);

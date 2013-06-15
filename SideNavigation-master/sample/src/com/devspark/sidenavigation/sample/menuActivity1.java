@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.DisplayMetrics;
@@ -20,6 +21,7 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
 import com.theindex.CuzyAdSDK.CuzyAdSDK;
+import com.theindex.CuzyAdSDK.CuzyTBKItem;
 import com.umeng.analytics.MobclickAgent;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -30,6 +32,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,10 +53,17 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
     private ImageView icon;
     private SideNavigationView sideNavigationView;
 
+    public ArrayList<CuzyTBKItem> rawData = new ArrayList<CuzyTBKItem>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads()
+                .detectDiskWrites().detectNetwork().penaltyLog().build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
+                .detectLeakedClosableObjects().penaltyLog().penaltyDeath().build());
+        Log.v("huangzf  ", "this is in the menu activity 1");
 
 
         CuzyAdSDK.getInstance().setContext(this);
@@ -68,11 +78,6 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
 
 
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads()
-                .detectDiskWrites().detectNetwork().penaltyLog().build());
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
-                .detectLeakedClosableObjects().penaltyLog().penaltyDeath().build());
-        Log.v("huangzf  ", "this is in the menu activity 1");
         if (getIntent().hasExtra(EXTRA_TITLE)) {
             String title = getIntent().getStringExtra(EXTRA_TITLE);
             int resId = getIntent().getIntExtra(EXTRA_RESOURCE_ID, 0);
@@ -92,6 +97,7 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
                 //  httpTest();
                 testCuzySDKfunction();
+
 
             }
         });
@@ -122,13 +128,37 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
     public void testCuzySDKfunction()
     {
 
-        //1.
-        CuzyAdSDK.getInstance().fetchItems("","茶叶",0);
-        //2. CuzyAdSDK.getInstance().fetchItems("6","",0);
-        //3. rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
-        //Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
-        //
+        new LongOperation().execute("");
+
     }
+
+    private class LongOperation extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String...params){
+
+            rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
+            Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+
+            return"Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            //TextView txt =(TextView) findViewById(R.id.output);
+            //txt.setText("Executed");// txt.setText(result);
+            //might want to change "executed" for the returned string passed into onPostExecute() but that is upto you
+        }
+
+        @Override
+        protected void onPreExecute(){
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values){
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getSupportMenuInflater().inflate(R.menu.main_menu, menu);

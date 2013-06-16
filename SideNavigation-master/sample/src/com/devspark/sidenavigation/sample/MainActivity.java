@@ -67,14 +67,7 @@ public class MainActivity extends SherlockActivity implements ISideNavigationCal
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        AdView adView = new AdView(this, AdSize.BANNER, "a15195f21aafd4d");
-        RelativeLayout layout = (RelativeLayout)findViewById(R.id.myRelateLayout);
-        layout.addView(adView);
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        adView.setY(dm.heightPixels-200);
-        adView.loadAd(new AdRequest());
     }
 
     @Override

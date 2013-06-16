@@ -50,15 +50,6 @@
               android:layout_below="@id/cellLine"
               android:text="itemPrice"
             />
-    <Button android:id="@+id/detailButton"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignBottom="@id/boundImage"
-            android:layout_alignRight="@id/boundImage"
-            android:clickable="true"
-            android:enabled="true"
-            android:visibility="visible"
-            android:background="#00000000"
-            />
+
 
 </RelativeLayout>

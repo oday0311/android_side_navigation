@@ -73,6 +73,7 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
         setContentView(R.layout.menuactivity1);
         listView = (ListView)findViewById(R.id.listView);
+        listView.setDividerHeight(0);
         int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
 
           testSimpleListView();
@@ -103,21 +104,18 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
     public void testSimpleListView()
     {
-        CuzyTBKItem makeOne= new CuzyTBKItem();
-        makeOne.setItemDescription("huangzf");
-        makeOne.setItemName("oday");
-        makeOne.setItemImageURLString("http://b.hiphotos.baidu.com/album/w%3D2048/sign=3b301c781ad5ad6eaaf963eab5f338db/78310a55b319ebc45e6e51258326cffc1e171673.jpg");
-        rawData.add(makeOne);
-
-        makeOne= new CuzyTBKItem();
-        makeOne.setItemDescription("huangzf2");
-        makeOne.setItemName("oday2");
-        makeOne.setItemImageURLString("http://b.hiphotos.baidu.com/album/w%3D2048/sign=3b301c781ad5ad6eaaf963eab5f338db/78310a55b319ebc45e6e51258326cffc1e171673.jpg");
-        rawData.add(makeOne);
 
 
         //ListView listview= new ListView(this);
-        cuzyAdapter adapter = new cuzyAdapter(rawData, this);
+        AsyncImageLoader loader = new AsyncImageLoader(getApplicationContext());
+
+        //将图片缓存至外部文件中
+        loader.setCache2File(true); //false
+        //设置外部缓存文件夹
+        loader.setCachedDir(this.getCacheDir().getAbsolutePath());
+
+
+        cuzyAdapter adapter = new cuzyAdapter(rawData, this,loader);
 
         listView.setAdapter(adapter);
         //setContentView(listview);
@@ -146,7 +144,7 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
             //TextView txt =(TextView) findViewById(R.id.output);
             //txt.setText("Executed");// txt.setText(result);
             //might want to change "executed" for the returned string passed into onPostExecute() but that is upto you
-            //reloadListView();
+            reloadListView();
         }
 
         @Override
@@ -160,8 +158,17 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
 
     public void reloadListView(){
+        //ListView listview= new ListView(this);
+        AsyncImageLoader loader = new AsyncImageLoader(getApplicationContext());
 
+        //将图片缓存至外部文件中
+        loader.setCache2File(true); //false
+        //设置外部缓存文件夹
+        loader.setCachedDir(this.getCacheDir().getAbsolutePath());
+        cuzyAdapter adapter = new cuzyAdapter(rawData, this,loader);
 
+        listView.setAdapter(adapter);
+        listView.deferNotifyDataSetChanged();
     }
 
 

@@ -77,6 +77,7 @@ public class LoaderImpl {
                     String filePath = this.cachedDir + "/" +fileName;
                     FileOutputStream fos = new FileOutputStream(filePath);
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                    fos.close();
                 }
             }
 

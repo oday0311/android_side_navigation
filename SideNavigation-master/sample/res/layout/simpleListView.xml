@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:id="@+id/relativeLayout">
+            android:id="@+id/relativeLayoutLeft" android:gravity="right">
         <ImageView android:id="@+id/itemImageView"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
@@ -53,13 +53,15 @@
                   android:layout_height="wrap_content"
                   android:layout_below="@id/boundImage"
                   android:text="itemName"
-                  android:minLines="1"/>
+                  android:maxLines="1" android:maxLength="9"/>
     </RelativeLayout>
     <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent" android:layout_alignBottom="@+id/relativeLayout"
+            android:layout_height="fill_parent" android:layout_alignBottom="@+id/relativeLayoutLeft"
+            android:id="@+id/relativeLayoutRight"
             android:background="@android:color/transparent"
-            android:layout_toRightOf="@+id/relativeLayout" android:layout_alignParentRight="true">
+            android:layout_alignParentRight="false"
+            android:gravity="left" android:layout_centerInParent="true" android:paddingLeft="150dp">
 
         <ImageView android:id="@+id/boundImage_right"
                    android:layout_width="wrap_content"

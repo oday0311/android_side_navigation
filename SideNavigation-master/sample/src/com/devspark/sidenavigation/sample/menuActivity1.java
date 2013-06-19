@@ -33,33 +33,21 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
     public static final String EXTRA_TITLE = "com.devspark.sidenavigation.sample.extra.MTGOBJECT";
     public static final String EXTRA_RESOURCE_ID = "com.devspark.sidenavigation.sample.extra.RESOURCE_ID";
     public static final String EXTRA_MODE = "com.devspark.sidenavigation.sample.extra.MODE";
+    public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.sample.extra.weburl";
+
 
     private ImageView icon;
     private SideNavigationView sideNavigationView;
 
-    private ListAdapter adapter;
     private ArrayList<ArrayList<CuzyTBKItem>> dataSourceForAdapter;
     private ListView listView;
     public ArrayList<CuzyTBKItem> rawData = new ArrayList<CuzyTBKItem>();
 
 
 
-    private ArrayList<ArrayList<CuzyTBKItem>> generateDataSource(){
-        ArrayList<ArrayList<CuzyTBKItem>> result = new ArrayList<ArrayList<CuzyTBKItem>>();
+    private AsyncImageLoader loader = null;
+    private  cuzyAdapter adapter = null;
 
-        int n = rawData.size();
-        {
-            for (int i = 0; i < n; i += 2){
-                ArrayList<CuzyTBKItem> arrayList = new ArrayList<CuzyTBKItem>();
-                arrayList.add(rawData.get(i));
-                if (i+1 <= n-1){
-                    arrayList.add(rawData.get(i+1));
-                }
-                result.add(arrayList);
-            }
-        }
-      return result;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,17 +95,17 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
 
         //ListView listview= new ListView(this);
-        AsyncImageLoader loader = new AsyncImageLoader(getApplicationContext());
+        loader = new AsyncImageLoader(getApplicationContext());
 
         //将图片缓存至外部文件中
         loader.setCache2File(true); //false
         //设置外部缓存文件夹
         loader.setCachedDir(this.getCacheDir().getAbsolutePath());
 
-
-        cuzyAdapter adapter = new cuzyAdapter(rawData, this,loader);
+        adapter = new cuzyAdapter(rawData, this,loader,this);
 
         listView.setAdapter(adapter);
+
         //setContentView(listview);
 
     }
@@ -159,23 +147,29 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
     public void reloadListView(){
         //ListView listview= new ListView(this);
-        AsyncImageLoader loader = new AsyncImageLoader(getApplicationContext());
-
-        //将图片缓存至外部文件中
-        loader.setCache2File(true); //false
-        //设置外部缓存文件夹
-        loader.setCachedDir(this.getCacheDir().getAbsolutePath());
-        cuzyAdapter adapter = new cuzyAdapter(rawData, this,loader);
+        adapter = new cuzyAdapter(rawData, this,loader,this);
 
         listView.setAdapter(adapter);
-        listView.deferNotifyDataSetChanged();
+        adapter.notifyDataSetChanged();
+
+        listView.setAdapter(adapter);
+        //listView.deferNotifyDataSetChanged();
     }
 
+    public void startWebViewActivity(String urlString)
+    {
+        Intent intent = new Intent(this, webViewActivity.class);
+        intent.putExtra(EXTRA_WEBURL, urlString);
 
-    public void userClickedView(ListItemView view){
+        // all of the other activities on top of it will be closed and this
+        // Intent will be delivered to the (now on top) old activity as a
+        // new Intent.
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+        startActivity(intent);
+        // no animation of transition
+        overridePendingTransition(0, 0);
     }
-
 
     private Bitmap getBitmap(CuzyTBKItem item){
         Bitmap bitmap = null;

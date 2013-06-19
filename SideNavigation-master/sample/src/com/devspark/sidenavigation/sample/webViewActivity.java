@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import com.devspark.sidenavigation.SideNavigationView;
 
 /**
@@ -32,6 +33,8 @@ public class webViewActivity extends Activity {
             String title = getIntent().getStringExtra(EXTRA_WEBURL);
             //setTitle(title);
             WebView uiwebview = (WebView)findViewById(R.id.webView);
+            uiwebview.setWebViewClient(new Callback());
+            uiwebview.getSettings().setBuiltInZoomControls(true);
             uiwebview.getSettings().setJavaScriptEnabled(true);
             uiwebview.loadUrl(title);
 
@@ -39,5 +42,33 @@ public class webViewActivity extends Activity {
             Log.v("huangzf", "the url is "+ title);
         }
 
+    }
+
+    private class Callback extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view,String url){
+//            view.loadUrl(url);
+            return false;
+        }
+        @Override
+        public void onPageStarted(android.webkit.WebView view, java.lang.String url, android.graphics.Bitmap favicon){
+            Log.d("CuzyAdSDK","started " + url);
+        }
+        @Override
+        public void onPageFinished(android.webkit.WebView view, java.lang.String url) {
+            Log.d("CuzyAdSDK","finished " + url);
+        }
+        @Override
+        public void onReceivedError(android.webkit.WebView view, int errorCode, java.lang.String description, java.lang.String failingUrl){
+            Log.d("CuzyAdSDK","error " + failingUrl + " " + description);
+        }
+//        @Override
+//        public void onLoadResource(android.webkit.WebView view, java.lang.String url) {
+//
+//        }
+//        @Override
+//        public android.webkit.WebResourceResponse shouldInterceptRequest(android.webkit.WebView view, java.lang.String url) {
+//
+//        }
     }
 }

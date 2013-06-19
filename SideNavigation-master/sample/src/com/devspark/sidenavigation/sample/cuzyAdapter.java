@@ -81,14 +81,18 @@ public class cuzyAdapter extends BaseAdapter {
         RelativeLayout leftLayout = (RelativeLayout)view.findViewById(R.id.relativeLayoutLeft);
 
         ///the cellimage is 140 pix , we using 40 pix as the middle empty
-        int leftPadding = (Utils.getWindowWith(thisActivity) - 140*2 - 40)/2;
+        int width = thisActivity.getWindowManager().getDefaultDisplay().getWidth();
+        int windowWith = width; //Utils.getWindowWith(thisActivity);
+        float densityValue = Utils.getDensity(thisActivity);
+        int leftPadding = (int) ((windowWith - 140*2*densityValue - 40)/2);
 
+        Log.i("cuzySDK    ", " the window width " + windowWith +" the density value is" + densityValue);
         leftLayout.setPadding(leftPadding,0,0,0);
 
         RelativeLayout rightLayout = (RelativeLayout)view.findViewById(R.id.relativeLayoutRight);
 
         ///the cellimage is 140 pix , we using 40 pix as the middle empty
-        int rightPadding = leftPadding+140+40;
+        int rightPadding = (int)(leftPadding+140*densityValue+40);
 
         rightLayout.setPadding(rightPadding,0,0,0);
 

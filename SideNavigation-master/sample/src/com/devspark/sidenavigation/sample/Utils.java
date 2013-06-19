@@ -147,4 +147,17 @@ public class Utils  {
         screenHeight = (int)(dm.heightPixels * density + 0.5f);     // 屏幕高（px，如：800px）
         return screenWidth;
     }
+    public static float getDensity(Activity acitivity)
+    {
+        int screenWidth ;
+        int screenHeight ;
+        DisplayMetrics dm = new DisplayMetrics();
+        dm = acitivity.getResources().getDisplayMetrics();
+        // 获取屏幕密度（方法3）
+        dm = new DisplayMetrics();
+        acitivity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        float density  = dm.density;
+        return density;
+    }
 }

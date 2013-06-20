@@ -114,7 +114,7 @@ public class cuzyAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     Log.i("Test", "点击");
-                    menuActivity1 temp = (menuActivity1)thisActivity;
+                    BaseMenuActivity temp = (BaseMenuActivity)thisActivity;
                     temp.startWebViewActivity("http://"+cuzyItem.getItemClickURLString());
                 }
             }
@@ -143,7 +143,7 @@ public class cuzyAdapter extends BaseAdapter {
             itemImageView_right.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    menuActivity1 temp = (menuActivity1)thisActivity;
+                    BaseMenuActivity temp = (BaseMenuActivity)thisActivity;
                     temp.startWebViewActivity("http://"+cuzyItem_right.getItemClickURLString());
                     Log.i("Test", "点击");
                 }

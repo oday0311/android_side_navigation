@@ -1,8 +1,6 @@
 package com.devspark.sidenavigation.cuzyAndroidDemo;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,8 +14,6 @@ import com.devspark.sidenavigation.cuzyAndroidDemo.imageCache.ImageLoader;
 import com.theindex.CuzyAdSDK.*;
 import com.umeng.analytics.MobclickAgent;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 
 
@@ -28,7 +24,7 @@ import java.util.ArrayList;
  * Time: 下午6:24
  * To change this template use File | Settings | File Templates.
  */
-public class menuActivity1 extends SherlockActivity implements ISideNavigationCallback{
+public class BaseMenuActivity extends SherlockActivity implements ISideNavigationCallback{
 
     public static final String EXTRA_TITLE = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.MTGOBJECT";
     public static final String EXTRA_RESOURCE_ID = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.RESOURCE_ID";
@@ -36,11 +32,10 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
     public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.weburl";
 
 
-    private ImageView icon;
-    private SideNavigationView sideNavigationView;
+    public ImageView icon;
+    public SideNavigationView sideNavigationView;
 
-    private ArrayList<ArrayList<CuzyTBKItem>> dataSourceForAdapter;
-    private ListView listView;
+    public ListView listView;
     public ArrayList<CuzyTBKItem> rawData = new ArrayList<CuzyTBKItem>();
 
     protected boolean displayImages = true;
@@ -48,8 +43,8 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
     protected int imagesInParallel = 2;
     protected String imageCacheDir = null;
 
-    private  cuzyAdapter adapter = null;
-    private ImageLoader imageLoader=  null;
+    public  cuzyAdapter adapter = null;
+    public ImageLoader imageLoader=  null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -66,9 +61,6 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
         int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
 
           testSimpleListView();
-        //dataSourceForAdapter = generateDataSource();
-       // adapter  = new ListAdapter(this,layoutID,dataSourceForAdapter);
-        //listView.setAdapter(adapter);
 
         icon = (ImageView) findViewById(android.R.id.icon);
         sideNavigationView = (SideNavigationView) findViewById(R.id.side_navigation_view);
@@ -113,7 +105,7 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
     }
 
-    private class LongOperation extends AsyncTask<String,Void,String> {
+    public class LongOperation extends AsyncTask<String,Void,String> {
 
         @Override
         protected String doInBackground(String...params){
@@ -169,39 +161,6 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
         overridePendingTransition(0, 0);
     }
 
-    private Bitmap getBitmap(CuzyTBKItem item){
-        Bitmap bitmap = null;
-        File file = new File(Utils.appExternalDirPath(),filename(item));
-        if (file.exists()){
-            try{
-                bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
-            }catch (Exception e){
-                Log.d("CuzyAdSDK", e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-        }
-        return bitmap;
-    }
-    private String filename(CuzyTBKItem item){
-        String result = null;
-        if (item != null){
-            int slash =  item.getItemImageURLString().lastIndexOf("/");
-            return item.getItemImageURLString().substring(slash + 1);
-        }
-        return result;
-    }
-
-    private int indexForItem(CuzyTBKItem item)
-    {
-
-        for(int i = 0; i < rawData.size(); i ++){
-            CuzyTBKItem it = rawData.get(i);
-            if (it.getItemID() == item.getItemID()){
-                return i;
-            }
-        }
-        return -1;
-    }
 
 
 
@@ -282,7 +241,7 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
      * @param title title of Activity
      * @param resId resource if of background image
      */
-    private void invokeActivity(String title, int resId) {
+    protected void invokeActivity(String title, int resId) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_RESOURCE_ID, resId);
@@ -299,9 +258,9 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
     }
 
 
-    private void invokeActivity1(String title, int resId ) {
+    protected void invokeActivity1(String title, int resId ) {
 
-        Intent intent = new Intent(this, menuActivity1.class);
+        Intent intent = new Intent(this, BaseMenuActivity.class);
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_RESOURCE_ID, resId);
         intent.putExtra(EXTRA_MODE, sideNavigationView.getMode() == SideNavigationView.Mode.LEFT ? 0 : 1);
@@ -316,9 +275,9 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
         overridePendingTransition(0, 0);
     }
 
-    private void invokeActivity2(String title, int resId ) {
+    protected void invokeActivity2(String title, int resId ) {
 
-        Intent intent = new Intent(this, menuActivity2.class);
+        Intent intent = new Intent(this, baseMenuActivity2.class);
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_RESOURCE_ID, resId);
         intent.putExtra(EXTRA_MODE, sideNavigationView.getMode() == SideNavigationView.Mode.LEFT ? 0 : 1);
@@ -332,9 +291,9 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
         // no animation of transition
         overridePendingTransition(0, 0);
     }
-    private void invokeActivity3(String title, int resId ) {
+    protected void invokeActivity3(String title, int resId ) {
 
-        Intent intent = new Intent(this, menuActivity3.class);
+        Intent intent = new Intent(this, baseMenuActivity3.class);
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_RESOURCE_ID, resId);
         intent.putExtra(EXTRA_MODE, sideNavigationView.getMode() == SideNavigationView.Mode.LEFT ? 0 : 1);
@@ -348,9 +307,9 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
         // no animation of transition
         overridePendingTransition(0, 0);
     }
-    private void invokeActivity4(String title, int resId ) {
+    public void invokeActivity4(String title, int resId ) {
 
-        Intent intent = new Intent(this, menuActivity4.class);
+        Intent intent = new Intent(this, baseMenuActivity_setting.class);
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_RESOURCE_ID, resId);
         intent.putExtra(EXTRA_MODE, sideNavigationView.getMode() == SideNavigationView.Mode.LEFT ? 0 : 1);

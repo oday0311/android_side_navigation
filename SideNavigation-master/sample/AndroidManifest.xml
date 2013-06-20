@@ -24,10 +24,10 @@
         <activity android:name="com.google.ads.AdActivity"
                   android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
                   />
-        <activity android:name=".menuActivity1"/>
-        <activity android:name=".menuActivity2"/>
-        <activity android:name=".menuActivity3"/>
-        <activity android:name=".menuActivity4"/>
+        <activity android:name=".BaseMenuActivity"/>
+        <activity android:name=".baseMenuActivity2"/>
+        <activity android:name=".baseMenuActivity3"/>
+        <activity android:name=".baseMenuActivity_setting"/>
         <activity android:name=".menuActivity5"/>
         <activity android:name=".webViewActivity"/>
         <activity android:name="com.theindex.CuzyAdSDK.CuzyTBKPresentationActivity"   />

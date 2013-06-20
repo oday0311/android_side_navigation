@@ -1,4 +1,4 @@
-package com.devspark.sidenavigation.sample;
+package com.devspark.sidenavigation.cuzyAndroidDemo;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.devspark.sidenavigation.SideNavigationView;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,7 +17,7 @@ import com.devspark.sidenavigation.SideNavigationView;
 public class webViewActivity extends Activity {
 
 
-    public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.sample.extra.weburl";
+    public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.weburl";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

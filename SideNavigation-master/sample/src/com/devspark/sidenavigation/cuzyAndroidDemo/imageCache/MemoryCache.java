@@ -1,4 +1,4 @@
-package com.devspark.sidenavigation.sample.imageCache;
+package com.devspark.sidenavigation.cuzyAndroidDemo.imageCache;
 
 /**
  * Created with IntelliJ IDEA.

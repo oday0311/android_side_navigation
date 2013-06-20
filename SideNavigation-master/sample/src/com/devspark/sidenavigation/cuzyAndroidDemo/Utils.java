@@ -1,4 +1,4 @@
-package com.devspark.sidenavigation.sample;
+package com.devspark.sidenavigation.cuzyAndroidDemo;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import java.io.File;
 import java.io.InputStream;

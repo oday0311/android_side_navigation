@@ -1,4 +1,4 @@
-package com.devspark.sidenavigation.sample;
+package com.devspark.sidenavigation.cuzyAndroidDemo;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,14 +12,13 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.SideNavigationView;
-import com.devspark.sidenavigation.sample.imageCache.ImageLoader;
+import com.devspark.sidenavigation.cuzyAndroidDemo.imageCache.ImageLoader;
 import com.theindex.CuzyAdSDK.*;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -31,10 +30,10 @@ import java.util.HashMap;
  */
 public class menuActivity1 extends SherlockActivity implements ISideNavigationCallback{
 
-    public static final String EXTRA_TITLE = "com.devspark.sidenavigation.sample.extra.MTGOBJECT";
-    public static final String EXTRA_RESOURCE_ID = "com.devspark.sidenavigation.sample.extra.RESOURCE_ID";
-    public static final String EXTRA_MODE = "com.devspark.sidenavigation.sample.extra.MODE";
-    public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.sample.extra.weburl";
+    public static final String EXTRA_TITLE = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.MTGOBJECT";
+    public static final String EXTRA_RESOURCE_ID = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.RESOURCE_ID";
+    public static final String EXTRA_MODE = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.MODE";
+    public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.weburl";
 
 
     private ImageView icon;

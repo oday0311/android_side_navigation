@@ -1,4 +1,4 @@
-package com.devspark.sidenavigation.sample.imageCache;
+package com.devspark.sidenavigation.cuzyAndroidDemo.imageCache;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +28,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
-import com.devspark.sidenavigation.sample.R;
+import com.devspark.sidenavigation.cuzyAndroidDemo.R;
 
 public class ImageLoader {
 

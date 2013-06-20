@@ -1,4 +1,4 @@
-package com.devspark.sidenavigation.sample;
+package com.devspark.sidenavigation.cuzyAndroidDemo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,7 +9,6 @@ package com.devspark.sidenavigation.sample;
  */
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -21,7 +20,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.devspark.sidenavigation.sample.imageCache.ImageLoader;
+import com.devspark.sidenavigation.cuzyAndroidDemo.imageCache.ImageLoader;
 import com.theindex.CuzyAdSDK.CuzyTBKItem;
 
 
@@ -33,7 +32,7 @@ public class cuzyAdapter extends BaseAdapter {
 
     private ImageLoader imageLoader=  null;
 
-    public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.sample.extra.weburl";
+    public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.weburl";
     /**
      * 构造函数,初始化Adapter,将数据传入
      * @param items

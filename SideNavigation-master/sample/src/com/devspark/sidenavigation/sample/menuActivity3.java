@@ -342,23 +342,6 @@ public class menuActivity3 extends SherlockActivity implements ISideNavigationCa
         // no animation of transition
         overridePendingTransition(0, 0);
     }
-    private void invokeActivity5(String title, int resId ) {
-
-        Intent intent = new Intent(this, menuActivity5.class);
-        intent.putExtra(EXTRA_TITLE, title);
-        intent.putExtra(EXTRA_RESOURCE_ID, resId);
-        intent.putExtra(EXTRA_MODE, sideNavigationView.getMode() == SideNavigationView.Mode.LEFT ? 0 : 1);
-
-        // all of the other activities on top of it will be closed and this
-        // Intent will be delivered to the (now on top) old activity as a
-        // new Intent.
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        startActivity(intent);
-        // no animation of transition
-        overridePendingTransition(0, 0);
-    }
-
 
 
     public String getResultForHttpGet(String cardNumberString) throws ClientProtocolException,  IOException {

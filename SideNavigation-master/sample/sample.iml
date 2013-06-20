@@ -17,6 +17,7 @@
     <orderEntry type="module" module-name="library" />
     <orderEntry type="module" module-name="library1" />
     <orderEntry type="module" module-name="actionbarsherlock" />
+    <orderEntry type="library" name="android-support-v4-r12" level="project" />
   </component>
 </module>
 

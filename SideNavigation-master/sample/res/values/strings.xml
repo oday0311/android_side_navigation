@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">信息查询工具</string>
-    <string name="title1">手机号码归属地查询</string>
-    <string name="title2">ip地址查询</string>
-    <string name="title3">身份证号码查询</string>
-    <string name="title4">百度网图判断工具</string>
-    <string name="title5">星座</string>
+    <string name="app_name">cuzy-购物导航</string>
+    <string name="title1">cuzy购物导航</string>
+    <string name="title2">cuzy购物导航</string>
+    <string name="title3">cuzy购物导航</string>
+    <string name="title4">cuzy购物导航</string>
+    <string name="title5">cuzy购物导航</string>
     <string name="mode">Mode</string>
     <string name="mode_left">Left</string>
     <string name="mode_right">Right</string>

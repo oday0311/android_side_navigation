@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.SideNavigationView;
+import com.devspark.sidenavigation.sample.imageCache.ImageLoader;
 import com.theindex.CuzyAdSDK.*;
 import com.umeng.analytics.MobclickAgent;
 
@@ -43,12 +44,13 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
     private ListView listView;
     public ArrayList<CuzyTBKItem> rawData = new ArrayList<CuzyTBKItem>();
 
+    protected boolean displayImages = true;
+    protected int imageCacheSize = 200;
+    protected int imagesInParallel = 2;
+    protected String imageCacheDir = null;
 
-
-    private AsyncImageLoader loader = null;
     private  cuzyAdapter adapter = null;
-
-
+    private ImageLoader imageLoader=  null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -95,14 +97,10 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
 
         //ListView listview= new ListView(this);
-        loader = new AsyncImageLoader(getApplicationContext());
 
-        //将图片缓存至外部文件中
-        loader.setCache2File(true); //false
-        //设置外部缓存文件夹
-        loader.setCachedDir(this.getCacheDir().getAbsolutePath());
+        imageLoader=new ImageLoader(this);
+        adapter = new cuzyAdapter(rawData, this,this, imageLoader);
 
-        adapter = new cuzyAdapter(rawData, this,loader,this);
 
         listView.setAdapter(adapter);
 
@@ -147,7 +145,8 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
 
     public void reloadListView(){
         //ListView listview= new ListView(this);
-        adapter = new cuzyAdapter(rawData, this,loader,this);
+
+        adapter = new cuzyAdapter(rawData, this,this,imageLoader);
 
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -353,22 +352,6 @@ public class menuActivity1 extends SherlockActivity implements ISideNavigationCa
     private void invokeActivity4(String title, int resId ) {
 
         Intent intent = new Intent(this, menuActivity4.class);
-        intent.putExtra(EXTRA_TITLE, title);
-        intent.putExtra(EXTRA_RESOURCE_ID, resId);
-        intent.putExtra(EXTRA_MODE, sideNavigationView.getMode() == SideNavigationView.Mode.LEFT ? 0 : 1);
-
-        // all of the other activities on top of it will be closed and this
-        // Intent will be delivered to the (now on top) old activity as a
-        // new Intent.
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        startActivity(intent);
-        // no animation of transition
-        overridePendingTransition(0, 0);
-    }
-    private void invokeActivity5(String title, int resId ) {
-
-        Intent intent = new Intent(this, menuActivity5.class);
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_RESOURCE_ID, resId);
         intent.putExtra(EXTRA_MODE, sideNavigationView.getMode() == SideNavigationView.Mode.LEFT ? 0 : 1);

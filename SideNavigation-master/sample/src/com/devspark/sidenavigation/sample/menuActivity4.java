@@ -1,45 +1,26 @@
 package com.devspark.sidenavigation.sample;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.StrictMode;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.SideNavigationView;
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
+import com.devspark.sidenavigation.sample.imageCache.ImageLoader;
+import com.theindex.CuzyAdSDK.*;
 import com.umeng.analytics.MobclickAgent;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,20 +34,43 @@ public class menuActivity4 extends SherlockActivity implements ISideNavigationCa
     public static final String EXTRA_TITLE = "com.devspark.sidenavigation.sample.extra.MTGOBJECT";
     public static final String EXTRA_RESOURCE_ID = "com.devspark.sidenavigation.sample.extra.RESOURCE_ID";
     public static final String EXTRA_MODE = "com.devspark.sidenavigation.sample.extra.MODE";
-
     public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.sample.extra.weburl";
+
 
     private ImageView icon;
     private SideNavigationView sideNavigationView;
 
+    private ArrayList<ArrayList<CuzyTBKItem>> dataSourceForAdapter;
+    private ListView listView;
+    public ArrayList<CuzyTBKItem> rawData = new ArrayList<CuzyTBKItem>();
+
+    protected boolean displayImages = true;
+    protected int imageCacheSize = 200;
+    protected int imagesInParallel = 2;
+    protected String imageCacheDir = null;
+
+    private  cuzyAdapter adapter = null;
+    private ImageLoader imageLoader=  null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
 
+        CuzyAdSDK.getInstance().setContext(this);
+        CuzyAdSDK.getInstance().registerApp("200056","051a9e4652fc5b881dfc6ba74d3cd633");
 
-        setContentView(R.layout.menuactivity4);
+
+        setContentView(R.layout.menuactivity1);
+        listView = (ListView)findViewById(R.id.listView);
+        listView.setDividerHeight(0);
+        int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
+
+        testSimpleListView();
+        //dataSourceForAdapter = generateDataSource();
+        // adapter  = new ListAdapter(this,layoutID,dataSourceForAdapter);
+        //listView.setAdapter(adapter);
+
         icon = (ImageView) findViewById(android.R.id.icon);
         sideNavigationView = (SideNavigationView) findViewById(R.id.side_navigation_view);
         sideNavigationView.setMenuItems(R.menu.side_navigation_menu);
@@ -74,11 +78,6 @@ public class menuActivity4 extends SherlockActivity implements ISideNavigationCa
 
 
 
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads()
-                .detectDiskWrites().detectNetwork().penaltyLog().build());
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
-                .detectLeakedClosableObjects().penaltyLog().penaltyDeath().build());
-        Log.v("huangzf  ", "this is in the menu activity 1");
         if (getIntent().hasExtra(EXTRA_TITLE)) {
             String title = getIntent().getStringExtra(EXTRA_TITLE);
             int resId = getIntent().getIntExtra(EXTRA_RESOURCE_ID, 0);
@@ -90,66 +89,122 @@ public class menuActivity4 extends SherlockActivity implements ISideNavigationCa
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button button = (Button) this.findViewById(R.id.searchButton);
-
-        button.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //httpTest();
-                // TestAdmob();
-                //
-
-                uploadFile();
-            }
-        });
-
-        Button button2 = (Button) this.findViewById(R.id.button2);
-
-        button2.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-               ///todo
-                click_xuanqutupian(v);
-            }
-        });
-
-
-
-
-        AdView adView = new AdView(this, AdSize.BANNER, "a15195f21aafd4d");
-        RelativeLayout layout = (RelativeLayout)findViewById(R.id.myRelateLayout);
-        layout.addView(adView);
-
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        adView.setY(dm.heightPixels-200);
-        adView.loadAd(new AdRequest());
+        testCuzySDKfunction();
     }
 
-    public void TestAdmob()
+    public void testSimpleListView()
     {
-        AdView adView = new AdView(this, AdSize.BANNER, "a15195f21aafd4d");
-        RelativeLayout layout = (RelativeLayout)findViewById(R.id.myRelateLayout);
-        layout.addView(adView);
-        adView.loadAd(new AdRequest());
+
+
+        //ListView listview= new ListView(this);
+
+        imageLoader=new ImageLoader(this);
+        adapter = new cuzyAdapter(rawData, this,this, imageLoader);
+
+
+        listView.setAdapter(adapter);
+
+        //setContentView(listview);
 
     }
-    public void click_xuanqutupian(View source) {
-        Intent intent = new Intent();
-  /* 开启Pictures画面Type设定为image */
-        intent.setType("image/*");
-        //intent.setType("audio/*"); //选择音频
-        //intent.setType("video/*"); //选择视频 （mp4 3gp 是android支持的视频格式）
-        //intent.setType("video/*;image/*");//同时选择视频和图片
+    public void testCuzySDKfunction()
+    {
 
+        new LongOperation().execute("");
 
-  /* 使用Intent.ACTION_GET_CONTENT这个Action */
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-  /* 取得相片后返回本画面 */
-        startActivityForResult(intent, 1);
     }
+
+    private class LongOperation extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String...params){
+
+            rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
+            Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+
+            return"Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            //TextView txt =(TextView) findViewById(R.id.output);
+            //txt.setText("Executed");// txt.setText(result);
+            //might want to change "executed" for the returned string passed into onPostExecute() but that is upto you
+            reloadListView();
+        }
+
+        @Override
+        protected void onPreExecute(){
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values){
+        }
+    }
+
+
+    public void reloadListView(){
+        //ListView listview= new ListView(this);
+
+        adapter = new cuzyAdapter(rawData, this,this,imageLoader);
+
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        listView.setAdapter(adapter);
+        //listView.deferNotifyDataSetChanged();
+    }
+
+    public void startWebViewActivity(String urlString)
+    {
+        Intent intent = new Intent(this, webViewActivity.class);
+        intent.putExtra(EXTRA_WEBURL, urlString);
+
+        // all of the other activities on top of it will be closed and this
+        // Intent will be delivered to the (now on top) old activity as a
+        // new Intent.
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        startActivity(intent);
+        // no animation of transition
+        overridePendingTransition(0, 0);
+    }
+
+    private Bitmap getBitmap(CuzyTBKItem item){
+        Bitmap bitmap = null;
+        File file = new File(Utils.appExternalDirPath(),filename(item));
+        if (file.exists()){
+            try{
+                bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+            }catch (Exception e){
+                Log.d("CuzyAdSDK", e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+        return bitmap;
+    }
+    private String filename(CuzyTBKItem item){
+        String result = null;
+        if (item != null){
+            int slash =  item.getItemImageURLString().lastIndexOf("/");
+            return item.getItemImageURLString().substring(slash + 1);
+        }
+        return result;
+    }
+
+    private int indexForItem(CuzyTBKItem item)
+    {
+
+        for(int i = 0; i < rawData.size(); i ++){
+            CuzyTBKItem it = rawData.get(i);
+            if (it.getItemID() == item.getItemID()){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -244,26 +299,6 @@ public class menuActivity4 extends SherlockActivity implements ISideNavigationCa
         overridePendingTransition(0, 0);
     }
 
-    public int ProgressBarHidder = 0;
-    public String getContentStringFromResponse(String responseString)
-    {
-
-        Pattern pattern = Pattern.compile("</code>(.*)</div>");
-
-        Matcher matcher = pattern.matcher(responseString);
-
-        if (matcher.find()){
-            Log.v("huangzf  ", matcher.group());
-            return matcher.group();
-        }
-        else
-        {
-            return "对不起，查询失败，请检查你输入的号码";
-        }
-
-
-    }
-
 
     private void invokeActivity1(String title, int resId ) {
 
@@ -334,232 +369,6 @@ public class menuActivity4 extends SherlockActivity implements ISideNavigationCa
 
 
 
-    @Override
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        // 选取图片的返回值
-
-        if (requestCode == 1) {
-
-            //
-
-            if (resultCode == RESULT_OK) {
-
-                Uri uri = data.getData();
-
-                Cursor cursor = getContentResolver().query(uri, null, null,
-
-                        null, null);
-
-                cursor.moveToFirst();
-
-                // String imgNo = cursor.getString(0); // 图片编号
-
-                String imgPath = cursor.getString(1); // 图片文件路径
-
-                String imgSize = cursor.getString(2); // 图片大小
-
-                String imgName = cursor.getString(3); // 图片文件名
-
-
-                picPathString = imgPath;
-                //fileName = imgName;
-
-                //fileSize = imgSize;
-
-                // Log.e("uri", uri.toString());
-
-                ContentResolver cr = this.getContentResolver();
-
-                //try
-                {
-
-                    //Bitmap bitmap = BitmapFactory.decodeStream(cr
-                    //        .openInputStream(uri));
-                    Bitmap bitmap = this.getLocalBitmap(imgPath);
-
-                    ImageView imageView = (ImageView) findViewById(R.id.imageView);
-                    imageView.setImageBitmap(bitmap);
-                  }
-                //catch (IOException e)
-                //{
-                //}
-                cursor.close();
-            }
-
-        }
-
-        // 拍照的返回值
-
-        if (requestCode == 2) {
-
-            if (resultCode == RESULT_OK) {
-
-                //
-
-
-               String imgPath = data.getStringExtra("filePath");
-
-                String fileName = data.getStringExtra("fileName");
-
-               String fileSize = data.getStringExtra("fileSize");
-
-                // 读取拍照所得的文件
-
-                try {
-
-                    Bitmap bitmap = this.getLocalBitmap(imgPath);
-
-
-                    ImageView imageView = (ImageView) findViewById(R.id.imageView);
-
-                    imageView.setImageBitmap(bitmap);
-
-                } catch (Exception e) {
-
-                    // TODO: handle exception
-
-                }
-
-                //
-
-            }
-
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-    }
-
-    private Bitmap getLocalBitmap(String url) {
-        try {
-                FileInputStream fis = new FileInputStream(url);
-                Bitmap returnBitmap =   BitmapFactory.decodeStream(fis);
-                fis.close();
-
-            return returnBitmap;
-        } catch (IOException e ) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public String picPathString = "";
-    private void uploadFile()
-    {
-        ////http://easynote.sinaapp.com/saestorage.php
-
-        String actionUrl = "http://easynote.sinaapp.com/saestorage.php";
-        String end ="\r\n";
-        String twoHyphens ="--";
-        String boundary ="*****";
-        try
-        {
-            URL url =new URL(actionUrl);
-            HttpURLConnection con=(HttpURLConnection)url.openConnection();
-          /* 允许Input、Output，不使用Cache */          con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-          /* 设置传送的method=POST */
-            con.setRequestMethod("POST");
-          /* setRequestProperty */
-            con.setRequestProperty("Connection", "Keep-Alive");
-            con.setRequestProperty("Charset", "UTF-8");
-            con.setRequestProperty("Content-Type",
-                    "multipart/form-data;boundary="+boundary);
-          /* 设置DataOutputStream */
-
-            DataOutputStream ds =            new DataOutputStream(con.getOutputStream());
-            ds.writeBytes(twoHyphens + boundary + end);
-            ds.writeBytes("Content-Disposition: form-data; "+ "name=\"uploaded\";filename=\""+"file.jpg" +"\""+ end);
-            ds.writeBytes(end);
-          /* 取得文件的FileInputStream */
-            ImageView imageView = (ImageView) findViewById(R.id.imageView);
-
-            imageView.setDrawingCacheEnabled(true);
-
-            Bitmap bitmap;
-            bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
-            imageView.setDrawingCacheEnabled(false);
-
-            String filepath1;
-            if (picPathString.length() > 3)
-            {
-                   filepath1 = picPathString;
-                ContentResolver cr = this.getContentResolver();
-
-
-            }
-            else
-            {
-                filepath1 = Environment.getExternalStorageDirectory() +File.separator + "tempPhoto.jpg";
-                FileOutputStream fStream =new FileOutputStream(filepath1);
-
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100,fStream);
-
-                fStream.flush();
-                fStream.close();
-            }
-
-
-
-            FileInputStream inputSteam = new FileInputStream(filepath1);
-
-
-          /* 设置每次写入1024bytes */
-            int bufferSize =1024;
-            byte[] buffer =new byte[bufferSize];
-            int length =-1;
-          /* 从文件读取数据至缓冲区 */
-            while((length = inputSteam.read(buffer)) !=-1)
-            {
-            /* 将资料写入DataOutputStream中 */
-                ds.write(buffer, 0, length);
-            }
-            ds.writeBytes(end);
-            ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
-          /* close streams */
-            inputSteam.close();
-            ds.flush();
-          /* 取得Response内容 */
-            InputStream is = con.getInputStream();
-            int ch;
-            StringBuffer b =new StringBuffer();
-            while( ( ch = is.read() ) !=-1 )
-            {
-                b.append( (char)ch );
-            }
-            Log.v("huangzf...",b.toString());
-          /* 将Response显示于Dialog */
-          //  showDialog("上传成功"+b.toString().trim());
-          /* 关闭DataOutputStream */
-            ds.close();
-            is.close();
-            String urlString = "http://shitu.baidu.com/i?objurl=" +b.toString()+"&rt=0&rn=10&ftn=searchstu&ct=1&stt=0&tn=baiduimage";
-            startWebViewActivity(urlString);
-        }
-        catch(Exception e)
-        {
-            //showDialog("上传失败"+e);
-        }
-    }
-
-
-    public void startWebViewActivity(String urlString)
-    {
-        Intent intent = new Intent(this, webViewActivity.class);
-        intent.putExtra(EXTRA_WEBURL, urlString);
-
-        // all of the other activities on top of it will be closed and this
-        // Intent will be delivered to the (now on top) old activity as a
-        // new Intent.
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        startActivity(intent);
-        // no animation of transition
-        overridePendingTransition(0, 0);
-    }
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);

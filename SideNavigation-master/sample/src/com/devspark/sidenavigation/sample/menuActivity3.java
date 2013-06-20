@@ -1,42 +1,26 @@
 package com.devspark.sidenavigation.sample;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.SideNavigationView;
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
+import com.devspark.sidenavigation.sample.imageCache.ImageLoader;
+import com.theindex.CuzyAdSDK.*;
 import com.umeng.analytics.MobclickAgent;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,18 +34,43 @@ public class menuActivity3 extends SherlockActivity implements ISideNavigationCa
     public static final String EXTRA_TITLE = "com.devspark.sidenavigation.sample.extra.MTGOBJECT";
     public static final String EXTRA_RESOURCE_ID = "com.devspark.sidenavigation.sample.extra.RESOURCE_ID";
     public static final String EXTRA_MODE = "com.devspark.sidenavigation.sample.extra.MODE";
+    public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.sample.extra.weburl";
+
 
     private ImageView icon;
     private SideNavigationView sideNavigationView;
 
+    private ArrayList<ArrayList<CuzyTBKItem>> dataSourceForAdapter;
+    private ListView listView;
+    public ArrayList<CuzyTBKItem> rawData = new ArrayList<CuzyTBKItem>();
+
+    protected boolean displayImages = true;
+    protected int imageCacheSize = 200;
+    protected int imagesInParallel = 2;
+    protected String imageCacheDir = null;
+
+    private  cuzyAdapter adapter = null;
+    private ImageLoader imageLoader=  null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
 
+        CuzyAdSDK.getInstance().setContext(this);
+        CuzyAdSDK.getInstance().registerApp("200056","051a9e4652fc5b881dfc6ba74d3cd633");
 
-        setContentView(R.layout.menuactivity3);
+
+        setContentView(R.layout.menuactivity1);
+        listView = (ListView)findViewById(R.id.listView);
+        listView.setDividerHeight(0);
+        int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
+
+        testSimpleListView();
+        //dataSourceForAdapter = generateDataSource();
+        // adapter  = new ListAdapter(this,layoutID,dataSourceForAdapter);
+        //listView.setAdapter(adapter);
+
         icon = (ImageView) findViewById(android.R.id.icon);
         sideNavigationView = (SideNavigationView) findViewById(R.id.side_navigation_view);
         sideNavigationView.setMenuItems(R.menu.side_navigation_menu);
@@ -69,11 +78,6 @@ public class menuActivity3 extends SherlockActivity implements ISideNavigationCa
 
 
 
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads()
-                .detectDiskWrites().detectNetwork().penaltyLog().build());
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
-                .detectLeakedClosableObjects().penaltyLog().penaltyDeath().build());
-        Log.v("huangzf  ", "this is in the menu activity 1");
         if (getIntent().hasExtra(EXTRA_TITLE)) {
             String title = getIntent().getStringExtra(EXTRA_TITLE);
             int resId = getIntent().getIntExtra(EXTRA_RESOURCE_ID, 0);
@@ -85,38 +89,122 @@ public class menuActivity3 extends SherlockActivity implements ISideNavigationCa
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button button = (Button) this.findViewById(R.id.searchButton);
-
-        button.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                httpTest();
-            }
-        });
-
-
-        final EditText t = (EditText)findViewById(R.id.editText);
-        t.setOnClickListener(new EditText.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                t.setText("");
-            }
-        });
-
-        ProgressBar progressHorizontal2 = (ProgressBar) findViewById(R.id.progressBar);
-        progressHorizontal2.setVisibility(View.INVISIBLE);
-
-        AdView adView = new AdView(this, AdSize.BANNER, "a15195f21aafd4d");
-        RelativeLayout layout = (RelativeLayout)findViewById(R.id.myRelateLayout);
-        layout.addView(adView);
-
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        adView.setY(dm.heightPixels-200);
-        adView.loadAd(new AdRequest());
+        testCuzySDKfunction();
     }
+
+    public void testSimpleListView()
+    {
+
+
+        //ListView listview= new ListView(this);
+
+        imageLoader=new ImageLoader(this);
+        adapter = new cuzyAdapter(rawData, this,this, imageLoader);
+
+
+        listView.setAdapter(adapter);
+
+        //setContentView(listview);
+
+    }
+    public void testCuzySDKfunction()
+    {
+
+        new LongOperation().execute("");
+
+    }
+
+    private class LongOperation extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String...params){
+
+            rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
+            Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+
+            return"Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            //TextView txt =(TextView) findViewById(R.id.output);
+            //txt.setText("Executed");// txt.setText(result);
+            //might want to change "executed" for the returned string passed into onPostExecute() but that is upto you
+            reloadListView();
+        }
+
+        @Override
+        protected void onPreExecute(){
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values){
+        }
+    }
+
+
+    public void reloadListView(){
+        //ListView listview= new ListView(this);
+
+        adapter = new cuzyAdapter(rawData, this,this,imageLoader);
+
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        listView.setAdapter(adapter);
+        //listView.deferNotifyDataSetChanged();
+    }
+
+    public void startWebViewActivity(String urlString)
+    {
+        Intent intent = new Intent(this, webViewActivity.class);
+        intent.putExtra(EXTRA_WEBURL, urlString);
+
+        // all of the other activities on top of it will be closed and this
+        // Intent will be delivered to the (now on top) old activity as a
+        // new Intent.
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        startActivity(intent);
+        // no animation of transition
+        overridePendingTransition(0, 0);
+    }
+
+    private Bitmap getBitmap(CuzyTBKItem item){
+        Bitmap bitmap = null;
+        File file = new File(Utils.appExternalDirPath(),filename(item));
+        if (file.exists()){
+            try{
+                bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+            }catch (Exception e){
+                Log.d("CuzyAdSDK", e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+        return bitmap;
+    }
+    private String filename(CuzyTBKItem item){
+        String result = null;
+        if (item != null){
+            int slash =  item.getItemImageURLString().lastIndexOf("/");
+            return item.getItemImageURLString().substring(slash + 1);
+        }
+        return result;
+    }
+
+    private int indexForItem(CuzyTBKItem item)
+    {
+
+        for(int i = 0; i < rawData.size(); i ++){
+            CuzyTBKItem it = rawData.get(i);
+            if (it.getItemID() == item.getItemID()){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -211,71 +299,6 @@ public class menuActivity3 extends SherlockActivity implements ISideNavigationCa
         overridePendingTransition(0, 0);
     }
 
-    public int ProgressBarHidder = 0;
-    public String getContentStringFromResponse(String responseString)
-    {
-
-        Pattern pattern = Pattern.compile("</code>(.*)</div>");
-
-        Matcher matcher = pattern.matcher(responseString);
-
-        if (matcher.find()){
-            Log.v("huangzf  ", matcher.group());
-            return matcher.group();
-        }
-        else
-        {
-            return "对不起，查询失败，请检查你输入的号码";
-        }
-
-
-    }
-    public void httpTest()
-    {
-
-        ProgressBar progressHorizontal2 = (ProgressBar) findViewById(R.id.progressBar);
-        progressHorizontal2.setVisibility(View.VISIBLE);
-
-        try{
-
-            EditText editView = (EditText) findViewById(R.id.editText);
-            String phoneString = editView.getText().toString() ;
-
-            if (phoneString.endsWith("a"))
-            {
-                phoneString = "43010419860419588X";
-            }
-            if (phoneString.length()<11)
-            {
-                Dialog alertDialog = new AlertDialog.Builder(this).
-                        setTitle("提示").
-                        setMessage("请输入正确的号码").
-                        setIcon(R.drawable.ic_launcher).
-                        create();
-                alertDialog.show();
-            }
-
-            String responseString = getResultForHttpGet(phoneString);
-            String resultString = getContentStringFromResponse(responseString);
-
-            resultString = resultString.replaceFirst("</code>","");
-            resultString =resultString.replaceFirst("</div>", "");
-            resultString= resultString.replaceAll("&nbsp;", "");
-            TextView resultView = (TextView) findViewById(R.id.textView);
-            resultView.setText(resultString);
-
-        }
-        catch (IOException e)
-        {
-
-        }
-
-        progressHorizontal2.setVisibility(View.INVISIBLE);
-        Log.v("huangzf ", "in http Test");
-
-
-
-    }
 
     private void invokeActivity1(String title, int resId ) {
 
@@ -344,24 +367,8 @@ public class menuActivity3 extends SherlockActivity implements ISideNavigationCa
     }
 
 
-    public String getResultForHttpGet(String cardNumberString) throws ClientProtocolException,  IOException {
-        //服务器  ：服务器项目  ：servlet名称
 
-        String path="http://sfz.8684.cn/";
-        HttpPost httpPost=new HttpPost(path);
-        List<NameValuePair> list=new ArrayList<NameValuePair>();
-        list.add(new BasicNameValuePair("userid", cardNumberString));
-        httpPost.setEntity(new UrlEncodedFormEntity(list,HTTP.UTF_8));//编者按：与HttpGet区别所在，这里是将参数用List传递
 
-        String result="";
-
-        HttpResponse response=new DefaultHttpClient().execute(httpPost);
-        if(response.getStatusLine().getStatusCode()==200){
-            HttpEntity entity=response.getEntity();
-            result=EntityUtils.toString(entity, HTTP.UTF_8);
-        }
-        return result;
-    }
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);

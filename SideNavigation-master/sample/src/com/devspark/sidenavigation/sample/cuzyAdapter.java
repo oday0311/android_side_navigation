@@ -14,15 +14,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Log;
-import android.widget.BaseAdapter;
+import android.widget.*;
+
 import java.util.ArrayList;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import com.devspark.sidenavigation.sample.imageCache.ImageLoader;
 import com.theindex.CuzyAdSDK.CuzyTBKItem;
 
 
@@ -30,8 +29,9 @@ public class cuzyAdapter extends BaseAdapter {
 
     private ArrayList<CuzyTBKItem> items = null;
     private Context             context       = null;
-    private AsyncImageLoader  imageLoader = null;
     private Activity thisActivity = null;
+
+    private ImageLoader imageLoader=  null;
 
     public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.sample.extra.weburl";
     /**
@@ -39,12 +39,11 @@ public class cuzyAdapter extends BaseAdapter {
      * @param items
      * @param context
      */
-    public cuzyAdapter(ArrayList<CuzyTBKItem> items, Context context, AsyncImageLoader imageLoader, Activity adapterActivity) {
+    public cuzyAdapter(ArrayList<CuzyTBKItem> items, Context context,  Activity adapterActivity, ImageLoader imageLoader) {
         this.items = items;
         this.context = context;
-        this.imageLoader = imageLoader;
         this.thisActivity = adapterActivity;
-
+        this.imageLoader = imageLoader;
         //for test
 
     }
@@ -80,23 +79,22 @@ public class cuzyAdapter extends BaseAdapter {
 
         RelativeLayout leftLayout = (RelativeLayout)view.findViewById(R.id.relativeLayoutLeft);
 
-        ///the cellimage is 140 pix , we using 40 pix as the middle empty
-        int width = thisActivity.getWindowManager().getDefaultDisplay().getWidth();
-        int windowWith = width; //Utils.getWindowWith(thisActivity);
-        float densityValue = Utils.getDensity(thisActivity);
-        int leftPadding = (int) ((windowWith - 140*2*densityValue - 40)/2);
+//        ///the cellimage is 140 pix , we using 40 pix as the middle empty
+//        int width = thisActivity.getWindowManager().getDefaultDisplay().getWidth();
+//        int windowWith = width; //Utils.getWindowWith(thisActivity);
+//        float densityValue = Utils.getDensity(thisActivity);
+//        int leftPadding = (int) ((windowWith - 140*2*densityValue - 40)/2);
+//
+//        leftLayout.setPadding(20,0,0,0);
+//
+//        RelativeLayout rightLayout = (RelativeLayout)view.findViewById(R.id.relativeLayoutRight);
+//
+//        ///the cellimage is 140 pix , we using 40 pix as the middle empty
+//        int rightPadding = (int)(leftPadding+140*densityValue+40);
+//
+//        rightLayout.setPadding(rightPadding,0,0,0);
 
-        Log.i("cuzySDK    ", " the window width " + windowWith +" the density value is" + densityValue);
-        leftLayout.setPadding(leftPadding,0,0,0);
-
-        RelativeLayout rightLayout = (RelativeLayout)view.findViewById(R.id.relativeLayoutRight);
-
-        ///the cellimage is 140 pix , we using 40 pix as the middle empty
-        int rightPadding = (int)(leftPadding+140*densityValue+40);
-
-        rightLayout.setPadding(rightPadding,0,0,0);
-
-        Log.i("cuzySDK", ""+ leftPadding + "   "+ rightPadding);
+       // Log.i("cuzySDK  ", ""+ leftPadding + "   "+ rightPadding +" the window width " + windowWith +" the density value is" + densityValue);
 
         //获取控件
         final ImageView itemImageView = (ImageView) view.findViewById(R.id.itemImageView);
@@ -108,27 +106,14 @@ public class cuzyAdapter extends BaseAdapter {
         final  CuzyTBKItem cuzyItem = (CuzyTBKItem) getItem(2*position);
         if (cuzyItem != null) {
             final Bitmap temp = getRes("");
-            //bookImageView.setImageBitmap(Utils.getHttpBitmap(bookData.getItemImageURLString()));
 
-            //下载图片，第二个参数是否缓存至内存中
-            imageLoader.downloadImage(cuzyItem.getItemImageURLString(), true, new AsyncImageLoader.ImageCallback() {
-                @Override
-                public void onImageLoaded(Bitmap bitmap, String imageUrl) {
-                    if(bitmap != null){
-                        itemImageView.setImageBitmap(bitmap);
-                    }else{
-                        //下载失败，设置默认图片
-                        itemImageView.setImageBitmap(temp);
-                    }
-                }
-            });
+            imageLoader.DisplayImage(cuzyItem.getItemImageURLString() , itemImageView);
 
 
             itemImageView.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
                     Log.i("Test", "点击");
                     menuActivity1 temp = (menuActivity1)thisActivity;
                     temp.startWebViewActivity("http://"+cuzyItem.getItemClickURLString());
@@ -150,23 +135,15 @@ public class cuzyAdapter extends BaseAdapter {
 
         if (cuzyItem_right != null) {
             final Bitmap tempRight = getRes("");
-            //bookImageView.setImageBitmap(Utils.getHttpBitmap(bookData.getItemImageURLString()));
-            //下载图片，第二个参数是否缓存至内存中
-            imageLoader.downloadImage(cuzyItem_right.getItemImageURLString(), true, new AsyncImageLoader.ImageCallback() {
-                @Override
-                public void onImageLoaded(Bitmap bitmap, String imageUrl) {
-                    if(bitmap != null){
-                        itemImageView_right.setImageBitmap(bitmap);
-                    }else{
-                        //下载失败，设置默认图片
-                        itemImageView_right.setImageBitmap(tempRight);
-                    }
-                }
-            });
+
+
+          	imageLoader.DisplayImage(cuzyItem_right.getItemImageURLString() , itemImageView_right);
+
+
+
             itemImageView_right.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
                     menuActivity1 temp = (menuActivity1)thisActivity;
                     temp.startWebViewActivity("http://"+cuzyItem_right.getItemClickURLString());
                     Log.i("Test", "点击");
@@ -175,7 +152,6 @@ public class cuzyAdapter extends BaseAdapter {
 
             });
 
-            itemImageView_right.setImageBitmap(tempRight);
 
             itemName_right.setText(cuzyItem_right.getItemName());
             itemPrice_right.setText("" + cuzyItem_right.getItemPromotionPrice()+"元");

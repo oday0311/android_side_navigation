@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,10 +21,13 @@ public class webViewActivity extends Activity {
 
     public static final String EXTRA_WEBURL = "com.devspark.sidenavigation.cuzyAndroidDemo.extra.weburl";
 
+    public ProgressBar progressBar = null;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.webview);
+        progressBar = (ProgressBar)findViewById(R.id.webview_progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads()
                 .detectDiskWrites().detectNetwork().penaltyLog().build());
@@ -51,14 +56,18 @@ public class webViewActivity extends Activity {
         }
         @Override
         public void onPageStarted(android.webkit.WebView view, java.lang.String url, android.graphics.Bitmap favicon){
+
+            progressBar.setVisibility(View.VISIBLE);
             Log.d("CuzyAdSDK","started " + url);
         }
         @Override
         public void onPageFinished(android.webkit.WebView view, java.lang.String url) {
+            progressBar.setVisibility(View.INVISIBLE);
             Log.d("CuzyAdSDK","finished " + url);
         }
         @Override
         public void onReceivedError(android.webkit.WebView view, int errorCode, java.lang.String description, java.lang.String failingUrl){
+            progressBar.setVisibility(View.INVISIBLE);
             Log.d("CuzyAdSDK","error " + failingUrl + " " + description);
         }
 //        @Override

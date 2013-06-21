@@ -3,6 +3,7 @@ package com.devspark.sidenavigation.cuzyAndroidDemo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.*;
 import com.devspark.sidenavigation.SideNavigationView;
 import com.devspark.sidenavigation.cuzyAndroidDemo.imageCache.ImageLoader;
@@ -34,6 +35,8 @@ public class baseMenuActivity2 extends BaseMenuActivity {
         listView.setDividerHeight(0);
         int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
 
+        progressBar = (ProgressBar)findViewById(R.id.myprogressBar);
+        progressBar.setVisibility(View.INVISIBLE);
         testSimpleListView();
 
         icon = (ImageView) findViewById(android.R.id.icon);
@@ -81,7 +84,7 @@ public class baseMenuActivity2 extends BaseMenuActivity {
         @Override
         protected String doInBackground(String...params){
 
-            rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
+            rawData = CuzyAdSDK.getInstance().fetchRawItems("", "鞋子", 0);
             Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
 
             return"Executed";
@@ -89,11 +92,13 @@ public class baseMenuActivity2 extends BaseMenuActivity {
 
         @Override
         protected void onPostExecute(String result){
+            progressBar.setVisibility(View.INVISIBLE);
             reloadListView();
         }
 
         @Override
         protected void onPreExecute(){
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override

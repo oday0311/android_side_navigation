@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -45,6 +46,8 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
 
     public  cuzyAdapter adapter = null;
     public ImageLoader imageLoader=  null;
+
+    public ProgressBar progressBar = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -68,6 +71,8 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
         sideNavigationView.setMenuClickCallback(this);
 
 
+        progressBar =  (ProgressBar)findViewById(R.id.myprogressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         if (getIntent().hasExtra(EXTRA_TITLE)) {
             String title = getIntent().getStringExtra(EXTRA_TITLE);
@@ -121,11 +126,14 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
             //TextView txt =(TextView) findViewById(R.id.output);
             //txt.setText("Executed");// txt.setText(result);
             //might want to change "executed" for the returned string passed into onPostExecute() but that is upto you
+
+            progressBar.setVisibility(View.INVISIBLE);
             reloadListView();
         }
 
         @Override
         protected void onPreExecute(){
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override

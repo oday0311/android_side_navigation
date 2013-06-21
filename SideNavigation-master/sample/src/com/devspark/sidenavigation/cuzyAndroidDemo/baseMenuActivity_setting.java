@@ -1,9 +1,12 @@
 package com.devspark.sidenavigation.cuzyAndroidDemo;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.*;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.SideNavigationView;
 import com.devspark.sidenavigation.cuzyAndroidDemo.imageCache.ImageLoader;
 import com.theindex.CuzyAdSDK.*;
@@ -25,16 +28,9 @@ public class baseMenuActivity_setting extends BaseMenuActivity {
         super.onCreate(savedInstanceState);
 
 
-        CuzyAdSDK.getInstance().setContext(this);
-        CuzyAdSDK.getInstance().registerApp("200056","051a9e4652fc5b881dfc6ba74d3cd633");
 
+        setContentView(R.layout.menuactivity_setting);
 
-        setContentView(R.layout.menuactivity1);
-        listView = (ListView)findViewById(R.id.listView);
-        listView.setDividerHeight(0);
-        int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
-
-        testSimpleListView();
 
         icon = (ImageView) findViewById(android.R.id.icon);
         sideNavigationView = (SideNavigationView) findViewById(R.id.side_navigation_view);
@@ -54,56 +50,7 @@ public class baseMenuActivity_setting extends BaseMenuActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        testCuzySDKfunction();
     }
-
-    public void testSimpleListView()
-    {
-
-
-        imageLoader=new ImageLoader(this);
-        adapter = new cuzyAdapter(rawData, this,this, imageLoader);
-
-
-        listView.setAdapter(adapter);
-
-
-    }
-    public void testCuzySDKfunction()
-    {
-
-        new LongOperation().execute("");
-
-    }
-
-    private class LongOperation extends AsyncTask<String,Void,String> {
-
-        @Override
-        protected String doInBackground(String...params){
-
-            rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
-            Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
-
-            return"Executed";
-        }
-
-        @Override
-        protected void onPostExecute(String result){
-            reloadListView();
-        }
-
-        @Override
-        protected void onPreExecute(){
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values){
-        }
-    }
-
-
-
-
 
 
 

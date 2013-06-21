@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.devspark.sidenavigation.SideNavigationView;
+import com.devspark.sidenavigation.cuzyAndroidDemo.LoadMoreListView.LoadMoreListView;
 import com.devspark.sidenavigation.cuzyAndroidDemo.imageCache.ImageLoader;
 import com.theindex.CuzyAdSDK.*;
 
@@ -31,7 +32,7 @@ public class baseMenuActivity2 extends BaseMenuActivity {
 
 
         setContentView(R.layout.menuactivity1);
-        listView = (ListView)findViewById(R.id.listView);
+        listView = (LoadMoreListView)findViewById(R.id.listView);
         listView.setDividerHeight(0);
         int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
 

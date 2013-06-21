@@ -1,7 +1,7 @@
 /*___Generated_by_IDEA___*/
 
 /** Automatically generated file. DO NOT MODIFY */
-package com.devspark.sidenavigation.sample;
+package com.devspark.sidenavigation.cuzyAndroidDemo;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;

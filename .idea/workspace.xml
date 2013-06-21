@@ -31,15 +31,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="728b621c-4d6f-440f-be10-098d79f50c09" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SideNavigation-master/sample/src/com/devspark/sidenavigation/cuzyAndroidDemo/baseMenuActivity2.java" afterPath="$PROJECT_DIR$/SideNavigation-master/sample/src/com/devspark/sidenavigation/cuzyAndroidDemo/baseMenuActivity2.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SideNavigation-master/sample/src/com/devspark/sidenavigation/cuzyAndroidDemo/baseMenuActivity3.java" afterPath="$PROJECT_DIR$/SideNavigation-master/sample/src/com/devspark/sidenavigation/cuzyAndroidDemo/baseMenuActivity3.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SideNavigation-master/sample/src/com/devspark/sidenavigation/cuzyAndroidDemo/BaseMenuActivity.java" afterPath="$PROJECT_DIR$/SideNavigation-master/sample/src/com/devspark/sidenavigation/cuzyAndroidDemo/BaseMenuActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SideNavigation-master/sample/res/layout/load_more_footer.xml" afterPath="$PROJECT_DIR$/SideNavigation-master/sample/res/layout/load_more_footer.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SideNavigation-master/sample/res/layout/menuactivity1.xml" afterPath="$PROJECT_DIR$/SideNavigation-master/sample/res/layout/menuactivity1.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="information.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="728b621c-4d6f-440f-be10-098d79f50c09" time="1371806925135" ignored="false" />
+    <file path="/Dummy.txt" changelist="728b621c-4d6f-440f-be10-098d79f50c09" time="1371810471601" ignored="false" />
     <file path="/menuActivity1.java" changelist="728b621c-4d6f-440f-be10-098d79f50c09" time="1371721065638" ignored="false" />
     <file path="$PROJECT_DIR$/../cuzy-android/CuzyAdSDKAndroid/src/com/theindex/CuzyAdSDK/CuzyNetCenter.java" changelist="728b621c-4d6f-440f-be10-098d79f50c09" time="1371296617510" ignored="false" />
     <file path="/fragment.java" changelist="728b621c-4d6f-440f-be10-098d79f50c09" time="1371719186453" ignored="false" />
@@ -132,7 +130,7 @@
       <file leaf-file-name="BaseMenuActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SideNavigation-master/sample/src/com/devspark/sidenavigation/cuzyAndroidDemo/BaseMenuActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="173" column="56" selection-start="5388" selection-end="5388" vertical-scroll-proportion="0.4034091">
+            <state line="178" column="48" selection-start="5430" selection-end="5430" vertical-scroll-proportion="0.7443182">
               <folding>
                 <element signature="e#1584#1597#0" expanded="true" />
                 <element signature="e#2432#2677#0" expanded="true" />
@@ -181,7 +179,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="260" />
+    <option name="x" value="424" />
     <option name="y" value="22" />
     <option name="width" value="1615" />
     <option name="height" value="977" />
@@ -703,7 +701,11 @@
       <created>1371806929634</created>
       <updated>1371806929634</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="update..~~">
+      <created>1371810477041</created>
+      <updated>1371810477041</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -727,7 +729,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="260" y="22" width="1615" height="977" extended-state="0" />
+    <frame x="424" y="22" width="1615" height="977" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14276609" sideWeight="0.6627771" order="3" side_tool="false" content_ui="tabs" />
@@ -947,7 +949,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SideNavigation-master/sample/src/com/devspark/sidenavigation/cuzyAndroidDemo/BaseMenuActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="173" column="56" selection-start="5388" selection-end="5388" vertical-scroll-proportion="0.4034091">
+        <state line="178" column="48" selection-start="5430" selection-end="5430" vertical-scroll-proportion="0.7443182">
           <folding>
             <element signature="e#1584#1597#0" expanded="true" />
             <element signature="e#2432#2677#0" expanded="true" />

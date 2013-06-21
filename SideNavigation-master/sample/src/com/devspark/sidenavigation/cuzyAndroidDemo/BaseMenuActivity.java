@@ -11,6 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.SideNavigationView;
+import com.devspark.sidenavigation.cuzyAndroidDemo.LoadMoreListView.LoadMoreListView;
 import com.devspark.sidenavigation.cuzyAndroidDemo.imageCache.ImageLoader;
 import com.theindex.CuzyAdSDK.*;
 import com.umeng.analytics.MobclickAgent;
@@ -36,8 +37,10 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
     public ImageView icon;
     public SideNavigationView sideNavigationView;
 
-    public ListView listView;
+    public LoadMoreListView listView;
     public ArrayList<CuzyTBKItem> rawData = new ArrayList<CuzyTBKItem>();
+    public ArrayList<CuzyTBKItem> LoadingMoreArray = new ArrayList<CuzyTBKItem>();
+
 
     protected boolean displayImages = true;
     protected int imageCacheSize = 200;
@@ -59,9 +62,16 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
 
 
         setContentView(R.layout.menuactivity1);
-        listView = (ListView)findViewById(R.id.listView);
+        listView = (LoadMoreListView)findViewById(R.id.listView);
         listView.setDividerHeight(0);
-        int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
+        listView.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            public void onLoadMore() {
+                // Do the work to load more items at the end of list
+                // here
+                new LoadDataTask().execute();
+            }
+        });
+
 
           testSimpleListView();
 
@@ -86,6 +96,8 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         testCuzySDKfunction();
+
+
     }
 
     public void testSimpleListView()
@@ -110,25 +122,44 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
 
     }
 
+    public int currentPageIndex = 0;
+    public int LoadingMoreFlag = 0;
     public class LongOperation extends AsyncTask<String,Void,String> {
 
         @Override
         protected String doInBackground(String...params){
 
-            rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
-            Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+            if (LoadingMoreFlag ==0)
+            {
+                currentPageIndex = 0;
+                rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
+                Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+            }
+            else
+            {
+
+                currentPageIndex++;
+                LoadingMoreArray = CuzyAdSDK.getInstance().fetchRawItems("6", "", currentPageIndex);
+
+            }
 
             return"Executed";
         }
 
         @Override
         protected void onPostExecute(String result){
-            //TextView txt =(TextView) findViewById(R.id.output);
-            //txt.setText("Executed");// txt.setText(result);
             //might want to change "executed" for the returned string passed into onPostExecute() but that is upto you
-
             progressBar.setVisibility(View.INVISIBLE);
-            reloadListView();
+
+            if (LoadingMoreFlag==0)
+            {
+                reloadListView();
+
+            }
+            else
+            {
+                appendListView();
+            }
         }
 
         @Override
@@ -141,9 +172,13 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
         }
     }
 
+    public void appendListView()
+    {
 
+
+
+    }
     public void reloadListView(){
-        //ListView listview= new ListView(this);
 
         adapter = new cuzyAdapter(rawData, this,this,imageLoader);
 
@@ -151,8 +186,10 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
         adapter.notifyDataSetChanged();
 
         listView.setAdapter(adapter);
-        //listView.deferNotifyDataSetChanged();
+
     }
+
+
 
     public void startWebViewActivity(String urlString)
     {
@@ -333,6 +370,47 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
     }
 
 
+
+    private class LoadDataTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            if (isCancelled()) {
+                return null;
+            }
+
+            // Simulates a background task
+            try
+            {
+                LoadingMoreFlag = 1;
+                new LongOperation().execute("");
+            }
+            catch (Exception e)
+            {
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+
+            //adapter.notifyDataSetChanged();
+            listView.onLoadMoreComplete();
+
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onCancelled() {
+            // Notify the loading more operation has finished
+            //((LoadMoreListView) getListView()).onLoadMoreComplete();
+            listView.onLoadMoreComplete();;
+        }
+    }
 
 
     public void onResume() {

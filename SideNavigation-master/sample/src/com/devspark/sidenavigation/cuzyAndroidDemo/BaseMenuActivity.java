@@ -140,10 +140,12 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
 
                 currentPageIndex++;
                 LoadingMoreArray = CuzyAdSDK.getInstance().fetchRawItems("6", "", currentPageIndex);
+                rawData.addAll(LoadingMoreArray);
+                Log.d("cuzy.com : ", " the size of rawData after loadingmore is " + rawData.size());
 
             }
 
-            return"Executed";
+            return "Executed";
         }
 
         @Override
@@ -175,6 +177,10 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
     public void appendListView()
     {
 
+        adapter = new cuzyAdapter(rawData, this,this,imageLoader);
+
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
 
     }
@@ -185,7 +191,6 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        listView.setAdapter(adapter);
 
     }
 
@@ -371,7 +376,7 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
 
 
 
-    private class LoadDataTask extends AsyncTask<Void, Void, Void> {
+    protected class LoadDataTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {

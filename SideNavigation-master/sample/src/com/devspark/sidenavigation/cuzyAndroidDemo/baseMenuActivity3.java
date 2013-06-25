@@ -27,13 +27,29 @@ public class baseMenuActivity3 extends BaseMenuActivity {
         super.onCreate(savedInstanceState);
 
 
-        CuzyAdSDK.getInstance().setContext(this);
-        CuzyAdSDK.getInstance().registerApp("200056","051a9e4652fc5b881dfc6ba74d3cd633");
+
+        {
+            CuzyAdSDK.getInstance().setContext(this);
+
+            CuzyAdSDK.getInstance().setUsingTestServer();
+            CuzyAdSDK.getInstance().registerApp("200056","051a9e4652fc5b881dfc6ba74d3cd633");
+            //release server key & secret:
+            //CuzyAdSDK.getInstance().registerApp("200003","208f53acd6d396867c2a721be6c807eb");
+        }
 
 
         setContentView(R.layout.menuactivity1);
         listView = (LoadMoreListView)findViewById(R.id.listView);
         listView.setDividerHeight(0);
+        listView.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            public void onLoadMore() {
+                // Do the work to load more items at the end of list
+                // here
+                new LoadDataTask().execute();
+            }
+        });
+
+
         int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
          progressBar = (ProgressBar)findViewById(R.id.myprogressBar);
         progressBar.setVisibility(View.INVISIBLE);
@@ -79,13 +95,26 @@ public class baseMenuActivity3 extends BaseMenuActivity {
 
     }
 
-    private class LongOperation extends AsyncTask<String,Void,String> {
+    public class LongOperation extends AsyncTask<String,Void,String> {
 
         @Override
         protected String doInBackground(String...params){
 
-            rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "女包", 0);
-            Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+            if (LoadingMoreFlag ==0)
+            {
+                currentPageIndex = 0;
+                rawData = CuzyAdSDK.getInstance().fetchRawItems("", "女包", 0);
+                Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+            }
+            else
+            {
+
+                currentPageIndex++;
+                LoadingMoreArray = CuzyAdSDK.getInstance().fetchRawItems("", "女包", currentPageIndex);
+                rawData.addAll(LoadingMoreArray);
+                Log.d("cuzy.com : ", " the size of rawData after loadingmore is " + rawData.size());
+
+            }
 
             return"Executed";
         }
@@ -93,7 +122,15 @@ public class baseMenuActivity3 extends BaseMenuActivity {
         @Override
         protected void onPostExecute(String result){
             progressBar.setVisibility(View.INVISIBLE);
-            reloadListView();
+            if (LoadingMoreFlag==0)
+            {
+                reloadListView();
+
+            }
+            else
+            {
+                appendListView();
+            }
         }
 
         @Override
@@ -109,6 +146,47 @@ public class baseMenuActivity3 extends BaseMenuActivity {
 
 
 
+
+    private class LoadDataTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            if (isCancelled()) {
+                return null;
+            }
+
+            // Simulates a background task
+            try
+            {
+                LoadingMoreFlag = 1;
+                new LongOperation().execute("");
+            }
+            catch (Exception e)
+            {
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+
+            //adapter.notifyDataSetChanged();
+            listView.onLoadMoreComplete();
+
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onCancelled() {
+            // Notify the loading more operation has finished
+            //((LoadMoreListView) getListView()).onLoadMoreComplete();
+            listView.onLoadMoreComplete();;
+        }
+    }
 
 
 

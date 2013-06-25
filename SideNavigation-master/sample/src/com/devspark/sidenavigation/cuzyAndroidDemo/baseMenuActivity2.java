@@ -34,6 +34,14 @@ public class baseMenuActivity2 extends BaseMenuActivity {
         setContentView(R.layout.menuactivity1);
         listView = (LoadMoreListView)findViewById(R.id.listView);
         listView.setDividerHeight(0);
+        listView.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            public void onLoadMore() {
+                // Do the work to load more items at the end of list
+                // here
+                new LoadDataTask().execute();
+            }
+        });
+
         int layoutID = com.theindex.CuzyAdSDK.R.layout.cuzy_list_cell_2;
 
         progressBar = (ProgressBar)findViewById(R.id.myprogressBar);
@@ -80,13 +88,28 @@ public class baseMenuActivity2 extends BaseMenuActivity {
 
     }
 
-    private class LongOperation extends AsyncTask<String,Void,String> {
+    protected class LongOperation extends AsyncTask<String,Void,String> {
 
         @Override
         protected String doInBackground(String...params){
 
-            rawData = CuzyAdSDK.getInstance().fetchRawItems("", "鞋子", 0);
-            Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
+            if (LoadingMoreFlag ==0)
+            {
+                currentPageIndex = 0;
+                rawData = CuzyAdSDK.getInstance().fetchRawItems("", "鞋子", 0);
+                Log.d("cuzy.com: ", "return of raw data: theindex:  " + rawData.size());
+            }
+            else
+            {
+
+                currentPageIndex++;
+                LoadingMoreArray = CuzyAdSDK.getInstance().fetchRawItems("", "鞋子", currentPageIndex);
+                rawData.addAll(LoadingMoreArray);
+                Log.d("cuzy.com : ", " the size of rawData after loadingmore is " + rawData.size());
+
+            }
+
+
 
             return"Executed";
         }
@@ -94,7 +117,15 @@ public class baseMenuActivity2 extends BaseMenuActivity {
         @Override
         protected void onPostExecute(String result){
             progressBar.setVisibility(View.INVISIBLE);
-            reloadListView();
+            if (LoadingMoreFlag==0)
+            {
+                reloadListView();
+
+            }
+            else
+            {
+                appendListView();
+            }
         }
 
         @Override
@@ -107,6 +138,48 @@ public class baseMenuActivity2 extends BaseMenuActivity {
         }
     }
 
+    private class LoadDataTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            if (isCancelled()) {
+                return null;
+            }
+
+            // Simulates a background task
+
+
+            try
+            {
+                LoadingMoreFlag = 1;
+                new LongOperation().execute("");
+            }
+            catch (Exception e)
+            {
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+
+            //adapter.notifyDataSetChanged();
+            listView.onLoadMoreComplete();
+
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onCancelled() {
+            // Notify the loading more operation has finished
+            //((LoadMoreListView) getListView()).onLoadMoreComplete();
+            listView.onLoadMoreComplete();;
+        }
+    }
 
 
 

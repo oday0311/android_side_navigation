@@ -18,6 +18,10 @@ package com.devspark.sidenavigation.cuzyAndroidDemo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -26,7 +30,11 @@ import com.actionbarsherlock.view.MenuItem;
 import com.devspark.sidenavigation.ISideNavigationCallback;
 import com.devspark.sidenavigation.SideNavigationView;
 import com.devspark.sidenavigation.SideNavigationView.Mode;
+import com.theindex.CuzyAdSDK.CuzyTBKItem;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * 
@@ -41,6 +49,8 @@ public class MainActivity extends SherlockActivity implements ISideNavigationCal
 
     private ImageView icon;
     private SideNavigationView sideNavigationView;
+    public ArrayList<String> urlArray = new ArrayList<String>();
+    ///private list
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +71,29 @@ public class MainActivity extends SherlockActivity implements ISideNavigationCal
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1006");
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1007");
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1008");
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1009");
+
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1043");
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1046");
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1071");
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1562");
+        urlArray.add("http://r.m.taobao.com/m3?p=mm_31846197_4064295_13216326&c=1563");
+
+
+        {
+            WebView uiwebview = (WebView)findViewById(R.id.webView);
+            uiwebview.setWebViewClient(new Callback());
+            uiwebview.getSettings().setBuiltInZoomControls(true);
+            uiwebview.getSettings().setJavaScriptEnabled(true);
+            int randIndex = (int)Math.random()%urlArray.size();
+            String urlString = urlArray.get(randIndex);
+            uiwebview.loadUrl(urlString);
+
+        }
 
 
     }
@@ -226,5 +259,31 @@ public class MainActivity extends SherlockActivity implements ISideNavigationCal
     public void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+
+
+    private class Callback extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view,String url){
+//            view.loadUrl(url);
+            return false;
+        }
+        @Override
+        public void onPageStarted(android.webkit.WebView view, java.lang.String url, android.graphics.Bitmap favicon){
+
+            icon.setVisibility(View.VISIBLE);
+            Log.d("CuzyAdSDK", "started " + url);
+        }
+        @Override
+        public void onPageFinished(android.webkit.WebView view, java.lang.String url) {
+            icon.setVisibility(View.INVISIBLE);
+            Log.d("CuzyAdSDK","finished " + url);
+        }
+        @Override
+        public void onReceivedError(android.webkit.WebView view, int errorCode, java.lang.String description, java.lang.String failingUrl){
+            Log.d("CuzyAdSDK","error " + failingUrl + " " + description);
+        }
+
     }
 }

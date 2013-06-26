@@ -132,14 +132,14 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
             if (LoadingMoreFlag ==0)
             {
                 currentPageIndex = 0;
-                rawData = CuzyAdSDK.getInstance().fetchRawItems("6", "", 0);
+                rawData = CuzyAdSDK.getInstance().fetchRawItems("", "男装", 0);
                 Log.d("cuzy.com: ", "return of raw data: Thindex:  " + rawData.size());
             }
             else
             {
 
                 currentPageIndex++;
-                LoadingMoreArray = CuzyAdSDK.getInstance().fetchRawItems("6", "", currentPageIndex);
+                LoadingMoreArray = CuzyAdSDK.getInstance().fetchRawItems("", "男装", currentPageIndex);
                 rawData.addAll(LoadingMoreArray);
                 Log.d("cuzy.com : ", " the size of rawData after loadingmore is " + rawData.size());
 
@@ -177,9 +177,8 @@ public class BaseMenuActivity extends SherlockActivity implements ISideNavigatio
     public void appendListView()
     {
 
-        adapter = new cuzyAdapter(rawData, this,this,imageLoader);
+        progressBar.setVisibility(View.INVISIBLE);
 
-        listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
 
